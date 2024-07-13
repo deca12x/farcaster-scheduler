@@ -5,25 +5,18 @@ export async function POST(request: Request) {
   const data = await request.formData();
   const userJSON = data.get("user");
   const image = data.get("file") as File;
-  console.log(image);
+  const castText = data.get("castText");
 
   try {
     if (!userJSON || typeof userJSON !== "string") {
       return new NextResponse("Invalid user field format.", { status: 400 });
     }
-
     const user = JSON.parse(userJSON);
-
-    let imageUrl = "";
-
     if (!user || !user.signer_uuid) {
       return new NextResponse("Invalid user field format.", { status: 400 });
     }
 
-    // const fileArray = image as formidable.File;
-    // const file = Array.isArray(fileArray) ? fileArray[0] : fileArray;
-    // console.log("Selected file:", file);
-
+    let imageUrl = "";
     if (image) {
       try {
         const apiKey = process.env.LIGHTHOUSE_API_KEY || "";
@@ -39,6 +32,8 @@ export async function POST(request: Request) {
       }
     }
 
+    const cast_text = castText ? castText.toString() : "🤷";
+
     const castOptions = {
       method: "POST",
       headers: {
@@ -48,7 +43,7 @@ export async function POST(request: Request) {
       },
       body: JSON.stringify({
         parent_author_fid: 410626,
-        text: `ethglobal brussels ${imageUrl ? "with pic" : "with no pic"}`,
+        text: cast_text,
         signer_uuid: user.signer_uuid,
         embeds: imageUrl ? [{ url: imageUrl }] : [],
       }),

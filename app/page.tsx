@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-// import { useState, useRef } from "react";
 import { NeynarAuthButton, useNeynarContext } from "@neynar/react";
 import { DynamicWidget } from "@/lib/dynamic";
 import { useRef, useState } from "react";
@@ -10,6 +9,7 @@ export default function Home() {
   const { user } = useNeynarContext();
   const [isLoading, setIsLoading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
+  const [castText, setCastText] = useState<string>("");
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFile(e.target.files ? e.target.files[0] : null);
@@ -23,15 +23,13 @@ export default function Home() {
       if (file) {
         formData.append("file", file);
       }
-      console.log("Selected file:", file);
-      console.log("fomrData:", formData);
+      formData.append("castText", castText);
 
       try {
         console.log("Sending formData:", formData);
         const res = await fetch("/api/upload", {
           method: "POST",
           body: formData,
-          
         });
         const data = await res.json();
         console.log("Response data:", data);
@@ -108,6 +106,12 @@ export default function Home() {
         )}
       </div>
       <div>
+        <input
+          type="text"
+          value={castText}
+          onChange={(e) => setCastText(e.target.value)}
+          placeholder="Enter cast text"
+        />
         <input type="file" onChange={handleFileChange} />
         <button onClick={handleCastClick} className="" disabled={isLoading}>
           {isLoading ? "Scheduling..." : "Schedule cast"}
