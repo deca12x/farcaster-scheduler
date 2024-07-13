@@ -31,7 +31,6 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
               .then((res) => {
                 if (res.ok) {
                   getSession();
-                  router.push("/dashboard")
                 } else {
                   console.error("Failed to log in");
                 }
