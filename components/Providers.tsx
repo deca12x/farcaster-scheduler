@@ -7,11 +7,8 @@ import {
   DynamicContextProvider,
   EthereumWalletConnectors,
 } from "../lib/dynamic";
-import { useButton } from "./ButtonContext";
-import { ButtonLogout } from "./ButtonLogout";
 
 export const Providers = ({ children }: { children: React.ReactNode }) => {
-  const { clickButton } = useButton();
   return (
     <>
       <DynamicContextProvider
@@ -59,13 +56,11 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
               onAuthSuccess: async (params) => {
                 console.log(params.user.signer_uuid);
                 await addProfile(params.user.signer_uuid);
-                clickButton();
               },
             },
           }}
         >
           {children}
-          <ButtonLogout />
         </NeynarContextProvider>
       </DynamicContextProvider>
       <Toaster
