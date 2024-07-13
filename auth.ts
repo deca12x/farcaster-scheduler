@@ -5,7 +5,6 @@ import prisma from "./lib/db";
 
 type User = {
   id: string;
-  // Add other fields as needed
 };
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -20,9 +19,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
       async authorize(
         credentials: Partial<Record<"token", unknown>>,
-        request: Request
       ): Promise<User | null> {
-        console.log(credentials);
         const token = credentials.token as string; // Safely cast to string; ensure to handle undefined case
         if (typeof token !== "string" || !token) {
           throw new Error("Token is required");
@@ -35,13 +32,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           };
           const currentUser = await prisma.users.findFirst({
             where: {
-              dynamic_id: user.id,
+              address: user.id,
             },
           });
           if (!currentUser) {
             await prisma.users.create({
               data: {
-                dynamic_id: user.id,
+                address: user.id,
               },
             });
           }

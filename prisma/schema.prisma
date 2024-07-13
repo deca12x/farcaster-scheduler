@@ -9,25 +9,24 @@ datasource db {
 }
 
 model Users {
-  id          Int          @id @default(autoincrement())
-  dynamic_id  String
-  signer_uids SignerUIDs[]
+  address     String        @id
+  signer_uids SignerUUIDs[]
 }
 
-model SignerUIDs {
-  id         Int     @id @default(autoincrement())
-  uid        Int
-  signer_uid String
-  casts      Casts[]
-  user       Users   @relation(fields: [uid], references: [id])
+model SignerUUIDs {
+  id           Int     @id @default(autoincrement())
+  address_user String
+  signer_uid   String
+  casts        Casts[]
+  user         Users   @relation(fields: [address_user], references: [address])
 }
 
 model Casts {
-  id          Int        @id @default(autoincrement())
+  id          Int         @id @default(autoincrement())
   cast_text   String
   ipfs_url    String
   date_time   DateTime
   published   Boolean
   signerUidId Int
-  signer_uid  SignerUIDs @relation(fields: [signerUidId], references: [id])
+  signer_uid  SignerUUIDs @relation(fields: [signerUidId], references: [id])
 }
