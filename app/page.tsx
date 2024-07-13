@@ -66,7 +66,7 @@ export default function Home() {
         <button className="btn btn-primary mb-6">Add Account</button>
         {/* Added Widgets */}
         <div className="w-full flex flex-col gap-4">
-          <DynamicWidget className="p-2 rounded shadow bg-base-100" />
+          <DynamicWidget />
           <NeynarAuthButton className="p-2 rounded shadow bg-base-100" />
         </div>
         {/* Accounts List */}
