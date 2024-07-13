@@ -9,13 +9,19 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@dynamic-labs/ethereum": "^2.3.0",
+    "@dynamic-labs/sdk-react-core": "^2.3.0",
     "@neynar/react": "^0.5.0",
+    "js-cookie": "^3.0.5",
+    "jsonwebtoken": "^9.0.2",
     "next": "14.2.5",
+    "next-auth": "beta",
     "react": "^18",
     "react-dom": "^18",
     "react-hot-toast": "^2.4.1"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
