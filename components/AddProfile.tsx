@@ -15,18 +15,24 @@ export default function AddProfile() {
   }, [isAuthenticated]);
   return (
     <>
-      <button className="btn" onClick={() => ref.current?.showModal()}>
+      <button
+        className="btn btn-primary"
+        onClick={() => ref.current?.showModal()}
+      >
         Add profile
       </button>
       <dialog className="modal" ref={ref}>
         <div className="modal-box">
-          <h3 className="font-bold text-lg">Add profile</h3>
-          {!user ? <NeynarAuthButton /> : <>Loading...</>}
-          <div className="modal-action">
-            <form method="dialog">
-              {/* if there is a button in form, it will close the modal */}
-              <button className="btn">Close</button>
-            </form>
+          <form method="dialog">
+            {/* if there is a button in form, it will close the modal */}
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+              ✕
+            </button>
+          </form>
+          <h3 className="font-bold text-lg mt-4">Add profile</h3>
+          <p>Add a profile for starting schedule your posts in one click</p>
+          <div className="flex flex-col items-center justify-center py-10">
+            {!user ? <NeynarAuthButton /> : <>Loading...</>}
           </div>
         </div>
       </dialog>

@@ -17,6 +17,8 @@ model SignerUUIDs {
   id           Int     @id @default(autoincrement())
   address_user String
   signer_uid   String
+  name         String
+  image        String
   casts        Casts[]
   user         Users   @relation(fields: [address_user], references: [address])
 }
