@@ -51,24 +51,24 @@ export default function Home() {
   };
 
   return (
-    <main className="flex min-h-screen flex-row">
+    <main className="flex min-h-screen flex-row bg-base-200">
       {/* Sidebar */}
-      <aside className="w-1/4 bg-gray-100 p-4">
+      <aside className="w-1/4 bg-base-100 p-4 shadow-lg">
         <div className="flex flex-col items-center">
           <div className="mb-4">
             <Image src="/logo.svg" alt="Logo" width={100} height={50} />
           </div>
-          <button className="flex items-center justify-center mb-6 bg-purple-600 text-white py-2 px-4 rounded">
-            Add Account
-          </button>
+          <button className="btn btn-primary mb-6">Add Account</button>
           {/* Accounts List */}
           <div className="flex flex-col gap-4">
             {[1, 2, 3, 4].map((index) => (
               <div
                 key={index}
-                className="flex items-center gap-4 p-2 bg-white rounded shadow"
+                className="flex items-center gap-4 p-2 bg-base-100 rounded shadow"
               >
-                <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
+                <div className="avatar">
+                  <div className="w-10 h-10 rounded-full bg-neutral-focus"></div>
+                </div>
                 <p className="text-lg font-semibold">Nome</p>
               </div>
             ))}
@@ -80,14 +80,14 @@ export default function Home() {
       <section className="w-3/4 p-6">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-semibold">Schedule a Cast</h1>
-          <a href="#" className="text-blue-500">
+          <a href="#" className="link link-primary">
             Analytics
           </a>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-md">
+        <div className="bg-base-100 p-6 rounded-lg shadow-md">
           <div className="flex flex-col gap-4">
             <textarea
-              className="w-full p-4 border border-gray-300 rounded"
+              className="textarea textarea-bordered w-full"
               placeholder="Cast text"
               value={castText}
               onChange={(e) => setCastText(e.target.value)}
@@ -95,18 +95,11 @@ export default function Home() {
             <input
               type="file"
               onChange={handleFileChange}
-              className="w-full border border-gray-300 rounded p-2"
+              className="input input-bordered w-full"
             />
             <div className="flex gap-4">
-              <input
-                type="text"
-                value={publishTime}
-                onChange={(e) => setPublishTime(e.target.value)}
-                placeholder="Publish Time"
-                className="w-1/3 p-2 border border-gray-300 rounded"
-              />
               <div className="w-1/3">
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium">
                   Publish Date
                 </label>
                 <input
@@ -117,7 +110,7 @@ export default function Home() {
                 />
               </div>
               <div className="w-1/3">
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium">
                   Publish Time
                 </label>
                 <input
@@ -132,22 +125,24 @@ export default function Home() {
                 value={channel}
                 onChange={(e) => setChannel(e.target.value)}
                 placeholder="Channel"
-                className="w-1/3 p-2 border border-gray-300 rounded"
+                className="input input-bordered w-1/3"
               />
             </div>
             <button
               onClick={handleCastClick}
-              className="bg-blue-500 text-white py-2 px-4 rounded"
+              className="btn btn-primary"
               disabled={isLoading}
             >
               {isLoading ? "Scheduling..." : "Schedule"}
             </button>
           </div>
         </div>
-        <div className="mt-6 bg-white p-4 rounded shadow-md">
+        <div className="mt-6 bg-base-100 p-4 rounded shadow-md">
           <p>Post cast txt</p>
           <div className="flex justify-between mt-4">
-            <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
+            <div className="avatar">
+              <div className="w-10 h-10 rounded-full bg-neutral-focus"></div>
+            </div>
             <div className="flex items-center gap-2">
               <p className="text-gray-600">DD/MM/YY</p>
               <p className="text-gray-600">00:00</p>
