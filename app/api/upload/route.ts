@@ -1,4 +1,3 @@
-import type { NextApiRequest, NextApiResponse } from "next";
 import lighthouse from "@lighthouse-web3/sdk";
 import { NextResponse } from "next/server";
 
@@ -14,7 +13,6 @@ export async function POST(request: Request) {
     }
 
     const user = JSON.parse(userJSON);
-    console.log("Parsed user:", user);
 
     let imageUrl = "";
 
@@ -30,9 +28,8 @@ export async function POST(request: Request) {
       try {
         const apiKey = process.env.LIGHTHOUSE_API_KEY || "";
         const arrayBuffer = await image.arrayBuffer();
-        const buffer = new Uint8Array(arrayBuffer);
-        // const buffer = Buffer.from(arrayBuffer); // Convert to Buffer
-        const uploadResponse = await lighthouse.upload(image, apiKey);
+        const buffer = Buffer.from(arrayBuffer); // Convert to Buffer
+        const uploadResponse = await lighthouse.uploadBuffer(buffer, apiKey);
         const { Hash } = uploadResponse.data;
         imageUrl = `https://gateway.lighthouse.storage/ipfs/${Hash}`;
         console.log("Image URL:", imageUrl);

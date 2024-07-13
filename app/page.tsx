@@ -9,13 +9,15 @@ import { useRef, useState } from "react";
 export default function Home() {
   const { user } = useNeynarContext();
   const [isLoading, setIsLoading] = useState(false);
-  const inputFile = useRef<HTMLInputElement>(null);
+  const [file, setFile] = useState<File | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFile(e.target.files ? e.target.files[0] : null);
+  };
 
   const handleCastClick = async () => {
     if (user) {
       setIsLoading(true);
-
-      const file = inputFile.current?.files?.[0];
       const formData = new FormData();
       formData.append("user", JSON.stringify(user));
       if (file) {
@@ -29,6 +31,7 @@ export default function Home() {
         const res = await fetch("/api/upload", {
           method: "POST",
           body: formData,
+          
         });
         const data = await res.json();
         console.log("Response data:", data);
@@ -105,7 +108,7 @@ export default function Home() {
         )}
       </div>
       <div>
-        <input type="file" ref={inputFile} />
+        <input type="file" onChange={handleFileChange} />
         <button onClick={handleCastClick} className="" disabled={isLoading}>
           {isLoading ? "Scheduling..." : "Schedule cast"}
         </button>
