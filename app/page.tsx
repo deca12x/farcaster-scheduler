@@ -10,6 +10,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [castText, setCastText] = useState<string>("");
+  const [channel, setChannel] = useState<string>("");
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFile(e.target.files ? e.target.files[0] : null);
@@ -24,6 +25,9 @@ export default function Home() {
         formData.append("file", file);
       }
       formData.append("castText", castText);
+      if (channel) {
+        formData.append("channel", channel);
+      }
 
       try {
         console.log("Sending formData:", formData);
@@ -111,6 +115,12 @@ export default function Home() {
           value={castText}
           onChange={(e) => setCastText(e.target.value)}
           placeholder="Enter cast text"
+        />
+        <input
+          type="text"
+          value={channel}
+          onChange={(e) => setChannel(e.target.value)}
+          placeholder="Channel"
         />
         <input type="file" onChange={handleFileChange} />
         <button onClick={handleCastClick} className="" disabled={isLoading}>

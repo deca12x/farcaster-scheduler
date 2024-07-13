@@ -6,6 +6,9 @@ export async function POST(request: Request) {
   const userJSON = data.get("user");
   const image = data.get("file") as File;
   const castText = data.get("castText");
+  const cast_text = castText ? castText.toString() : "🤷";
+  let channel = data.get("channel")?.toString();
+  channel = channel?.startsWith("/") ? channel?.substring(1) : channel;
 
   try {
     if (!userJSON || typeof userJSON !== "string") {
@@ -32,8 +35,6 @@ export async function POST(request: Request) {
       }
     }
 
-    const cast_text = castText ? castText.toString() : "🤷";
-
     const castOptions = {
       method: "POST",
       headers: {
@@ -46,6 +47,7 @@ export async function POST(request: Request) {
         text: cast_text,
         signer_uuid: user.signer_uuid,
         embeds: imageUrl ? [{ url: imageUrl }] : [],
+        channel_id: channel,
       }),
     };
 
