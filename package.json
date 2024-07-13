@@ -11,8 +11,10 @@
   "dependencies": {
     "@dynamic-labs/ethereum": "^2.3.0",
     "@dynamic-labs/sdk-react-core": "^2.3.0",
+    "@lighthouse-web3/sdk": "^0.3.3",
     "@neynar/react": "^0.5.0",
     "@prisma/client": "^5.16.2",
+    "formidable": "^3.5.1",
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
     "next": "14.2.5",
@@ -23,6 +25,7 @@
     "react-hot-toast": "^2.4.1"
   },
   "devDependencies": {
+    "@types/formidable": "^3.4.5",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20",
     "@types/react": "^18",

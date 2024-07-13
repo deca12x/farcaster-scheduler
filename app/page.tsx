@@ -21,14 +21,17 @@ export default function Home() {
       if (file) {
         formData.append("file", file);
       }
+      console.log("Selected file:", file);
+      console.log("fomrData:", formData);
 
       try {
-        const res = await fetch("/api/route", {
+        console.log("Sending formData:", formData);
+        const res = await fetch("/api/upload", {
           method: "POST",
           body: formData,
         });
         const data = await res.json();
-        console.log(data);
+        console.log("Response data:", data);
       } catch (error) {
         console.error("Error:", error);
       } finally {
@@ -104,7 +107,7 @@ export default function Home() {
       <div>
         <input type="file" ref={inputFile} />
         <button onClick={handleCastClick} className="" disabled={isLoading}>
-          {isLoading ? "Scheduling..." : "Post in schedule"}
+          {isLoading ? "Scheduling..." : "Schedule cast"}
         </button>
       </div>
       <a
