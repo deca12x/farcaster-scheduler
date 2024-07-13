@@ -1,9 +1,9 @@
 "use client"
 import { NeynarContextProvider, Theme } from "@neynar/react";
+import { getCsrfToken, getSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { Toaster } from "react-hot-toast";
 import { DynamicContextProvider, EthereumWalletConnectors } from "../lib/dynamic";
-import { getCsrfToken, getSession, SessionProvider } from "next-auth/react";
-import { useRouter } from "next/navigation";
 
 export const Providers = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter()

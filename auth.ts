@@ -19,11 +19,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token: { label: "Token", type: "text" },
       },
       async authorize(
-        credentials,
+        credentials: Partial<Record<"token", unknown>>,
+        request: Request
       ): Promise<User | null> {
-        if(!credentials) {
-          throw new Error("Credentials is required");
-        }
+        console.log(credentials)
         const token = credentials.token as string; // Safely cast to string; ensure to handle undefined case
         if (typeof token !== "string" || !token) {
           throw new Error("Token is required");
@@ -33,14 +32,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (jwtPayload) {
           // Transform the JWT payload into your user object
           const user: User = {
-            id: jwtPayload.sub || "",
+            id: jwtPayload.sub || "", // Assuming 'sub' is the user ID
           };
           return user;
         } else {
           return null;
         }
       },
-      
     }),
   ],
 })
