@@ -4,49 +4,40 @@ import Image from "next/image";
 // import { useState, useRef } from "react";
 import { NeynarAuthButton, useNeynarContext } from "@neynar/react";
 import { DynamicWidget } from "@/lib/dynamic";
+import { useRef, useState } from "react";
 
 export default function Home() {
   const { user } = useNeynarContext();
-  // const [isLoading, setIsLoading] = useState(false);
-  // const inputFile = useRef<HTMLInputElement>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const inputFile = useRef<HTMLInputElement>(null);
 
-  // const handleCastClick = async () => {
-  //   if (user) {
-  //     setIsLoading(true);
+  const handleCastClick = async () => {
+    if (user) {
+      setIsLoading(true);
 
-  //     const file = inputFile.current?.files?.[0];
-  //     const formData = new FormData();
-  //     formData.append("user", JSON.stringify(user));
-  //     if (file) {
-  //       formData.append("file", file);
-  //     }
+      const file = inputFile.current?.files?.[0];
+      const formData = new FormData();
+      formData.append("user", JSON.stringify(user));
+      if (file) {
+        formData.append("file", file);
+      }
 
-  //     try {
-  //       const res = await fetch("/api/route", {
-  //         method: "POST",
-  //         body: formData,
-  //       });
-  //       const data = await res.json();
-  //       console.log(data);
-  //     } catch (error) {
-  //       console.error("Error:", error);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   } else {
-  //     console.error("User is not authenticated");
-  //   }
-  // };
-
-  // ADD BELOW
-  // <input type="file" ref={inputFile} />
-  // <button
-  //   onClick={handleCastClick}
-  //   className="bg-blue-500 text-white px-4 py-2 rounded-md"
-  //   disabled={isLoading}
-  // >
-  //   {isLoading ? "Posting..." : "Post Cast"}
-  // </button>
+      try {
+        const res = await fetch("/api/route", {
+          method: "POST",
+          body: formData,
+        });
+        const data = await res.json();
+        console.log(data);
+      } catch (error) {
+        console.error("Error:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      console.error("User is not authenticated");
+    }
+  };
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
@@ -85,12 +76,11 @@ export default function Home() {
         />
       </div>
       <div>
-      <DynamicWidget />
+        <DynamicWidget />
+        <NeynarAuthButton />
       </div>
 
       <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        {/* <NeynarAuthButton /> */}
-
         {user && (
           <>
             <div className="flex flex-col gap-4 w-96 p-4 rounded-md shadow-md">
@@ -110,24 +100,29 @@ export default function Home() {
             </div>
           </>
         )}
-
-        <a
-          href="https://github.com/deca12x/qcast-scheduler"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Github repo{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            q your casts
-          </p>
-        </a>
       </div>
+      <div>
+        <input type="file" ref={inputFile} />
+        <button onClick={handleCastClick} className="" disabled={isLoading}>
+          {isLoading ? "Scheduling..." : "Post in schedule"}
+        </button>
+      </div>
+      <a
+        href="https://t3.gstatic.com/licensed-image?q=tbn:ANd9GcRlex2yeMomsbkm0qzpHjtPf8j9QLCDPLZ_brREwaQIrpsnwot3sOfn8Qr3ujA92cho"
+        className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <h2 className="mb-3 text-2xl font-semibold">
+          Github repo{" "}
+          <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
+            -&gt;
+          </span>
+        </h2>
+        <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
+          check the code
+        </p>
+      </a>
     </main>
   );
 }
