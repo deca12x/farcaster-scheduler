@@ -54,8 +54,11 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
             defaultTheme: Theme.Light,
             eventsCallbacks: {
               onAuthSuccess: async (params) => {
-                console.log(params.user.signer_uuid);
-                await addProfile(params.user.signer_uuid);
+                await addProfile(
+                  params.user.signer_uuid,
+                  params.user.username,
+                  params.user.pfp_url || ""
+                );
               },
             },
           }}

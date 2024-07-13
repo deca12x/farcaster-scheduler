@@ -15,7 +15,7 @@ export default function AddProfile() {
   }, [isAuthenticated]);
   return (
     <>
-      <button className="btn" onClick={() => ref.current?.showModal()}>
+      <button className="btn btn-primary" onClick={() => ref.current?.showModal()}>
         Add profile
       </button>
       <dialog className="modal" ref={ref}>
