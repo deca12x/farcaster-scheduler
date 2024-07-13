@@ -2,9 +2,8 @@ import { auth } from "@/auth";
 import AddProfile from "@/components/AddProfile";
 import prisma from "@/lib/db";
 import { redirect } from "next/navigation";
-import Image from "next/image";
-import Link from "next/link";
 import { DynamicWidget } from "@/lib/dynamic";
+import ProfileItem from "@/components/ProfileItem";
 
 export default async function Layout({
   children,
@@ -26,20 +25,7 @@ export default async function Layout({
       <div className="bg-base-200 flex flex-col items-center border-r-2 border-base-300">
         <p className="font-bold my-8">Scheduler</p>
         {profiles.map((profile) => (
-          <Link
-            className="flex items-center justify-start mt-2 gap-4 w-full px-4"
-            key={profile.id}
-            href={"/dashboard/" + profile.signer_uid}
-          >
-            <Image
-              src={profile.image}
-              alt="profile"
-              className="rounded-full"
-              width={50}
-              height={50}
-            />
-            <span>{profile.name}</span>
-          </Link>
+          <ProfileItem profile={profile} key={profile.signer_uid} />
         ))}
         <div className="flex justify-center mt-8">
           <AddProfile />
