@@ -6,18 +6,9 @@ export default async function Layout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="drawer lg:drawer-open">
-      <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-      <div className="drawer-content flex flex-col items-center justify-center">
-        {children}
-      </div>
-      <div className="drawer-side">
-        <label
-          htmlFor="my-drawer-2"
-          aria-label="close sidebar"
-          className="drawer-overlay"
-        ></label>
-        <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
+    <div className="grid grid-cols-6 min-h-screen">
+      <div className="bg-base-200">
+        <ul className="menu text-base-content p-4">
           <li className="menu-title">Scheduler</li>
           <li>
             <a>Sidebar Item 1</a>
@@ -25,8 +16,11 @@ export default async function Layout({
           <li>
             <a>Sidebar Item 2</a>
           </li>
-          <li><AddProfile /></li>
         </ul>
+        <div className="flex justify-center"><AddProfile /></div>
+      </div>
+      <div className="col-span-5 flex flex-col items-center justify-center">
+        {children}
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { validateJWT } from "./lib/authHelpers";
 import prisma from "./lib/db";
+import "next-auth/jwt"
 
 type User = {
   id: string;
@@ -49,4 +50,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }),
   ],
+  callbacks: {
+    async session({ session, token }) {
+      session.user.id = token.sub as string
+      return session
+    },
+  },
 });
+
+declare module "next-auth" {
+  interface Session {
+    id?: string
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    id?: string
+  }
+}
