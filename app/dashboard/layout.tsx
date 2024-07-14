@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { DynamicWidget } from "@/lib/dynamic";
 import ProfileItem from "@/components/ProfileItem";
 import Link from "next/link";
+import Image from "next/image";
 
 export default async function Layout({
   children,
@@ -35,7 +36,7 @@ export default async function Layout({
       <div className="col-span-5 min-h-screen flex flex-col">
         <div className="w-full bg-base-200 flex p-2 items-center">
         <div className="grow">
-          <Link href="/">Scheduler</Link>
+          <Link href="/"><Image src="/Logobru.png" alt="Logo" className="w-24" width={100} height={100} /></Link>
         </div>
           <div>
             <DynamicWidget />
