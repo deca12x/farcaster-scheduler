@@ -1,5 +1,6 @@
 import prisma from "@/lib/db";
 import lighthouse from "@lighthouse-web3/sdk";
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -27,12 +28,11 @@ export async function POST(request: Request) {
         const uploadResponse = await lighthouse.uploadBuffer(buffer, apiKey);
         const { Hash } = uploadResponse.data;
         imageUrl = `https://gateway.lighthouse.storage/ipfs/${Hash}`;
-        console.log("Image URL:", imageUrl);
         await prisma.casts.create({
           data: {
             ipfs_url: imageUrl,
             cast_text: cast_text,
-            date_time: datetime ? datetime.toString() : "",
+            date_time: datetime ? new Date(datetime.toString()) : "",
             published: false,
             signerUidId: id.id
           }
@@ -71,7 +71,8 @@ export async function POST(request: Request) {
 
     // const data = await response.json();
     // console.log("Neynar API response:", data);
-    return new NextResponse("Success", { status: 200 });
+    revalidatePath("/dashboard/[uuid]", "page")
+    return Response.json({status: "ok"})
   } catch (error) {
     console.error("Error:", error);
     return new NextResponse("Server Side error 500", { status: 500 });
