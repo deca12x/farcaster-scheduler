@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request) {
   const data = await request.formData();
   const uuid = data.get("uuid")?.toString();
-  const datetime = data.get("datetime")
+  const datetime = data.get("datetime");
   const image = data.get("file") as File;
   const castText = data.get("castText");
   const cast_text = castText ? castText.toString() : "🤷";
@@ -18,9 +18,9 @@ export async function POST(request: Request) {
       try {
         const id = await prisma.signerUUIDs.findFirstOrThrow({
           where: {
-            signer_uid: uuid
-          }
-        })
+            signer_uid: uuid,
+          },
+        });
         const apiKey = process.env.LIGHTHOUSE_API_KEY || "";
         const arrayBuffer = await image.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer); // Convert to Buffer
@@ -32,11 +32,11 @@ export async function POST(request: Request) {
           data: {
             ipfs_url: imageUrl,
             cast_text: cast_text,
-            date_time: datetime ? datetime.toString() : "",
+            datetime: datetime ? datetime.toString() : "",
             published: false,
-            signerUidId: id.id
-          }
-        })
+            signerUidId: id.id,
+          },
+        });
       } catch (error) {
         console.error("Failed to upload image to IPFS:", error);
         return new NextResponse("Invalid user field format.", { status: 400 });
