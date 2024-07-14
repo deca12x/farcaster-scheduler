@@ -1,6 +1,6 @@
 "use client";
 
-import { DynamicConnectButton, DynamicWidget, useIsLoggedIn } from "@dynamic-labs/sdk-react-core";
+import { DynamicWidget, useIsLoggedIn } from "@dynamic-labs/sdk-react-core";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -15,7 +15,6 @@ export default function Page() {
         <div className="space-x-10 items-center hidden md:flex">
           <a href="#why" className="font-bold">Why use HOOT</a>
           <a href="#how" className="font-bold">How it works</a>
-          {isLoggedIn ? <Link className="btn btn-primary" href="/dashboard">Enter app</Link> : <DynamicWidget />}
         </div>
       </div>
       <div className="mt-20 text-center flex flex-col place-content-center">
@@ -28,9 +27,6 @@ export default function Page() {
       </div>
       <div className="mt-12 flex place-content-center">
       {isLoggedIn ? <Link className="btn btn-primary" href="/dashboard">Enter app</Link> : <DynamicWidget />}
-      </div>
-      <div className="mt-12 flex place-content-center">
-        <Image src="/globe.png" width={600} height={600} alt="globe" />
       </div>
       <div className="mt-20 text-center" id="why">
         <p className="text-5xl font-bold">Why Use HOOT</p>

@@ -2,7 +2,6 @@
 
 import { SignerUUIDs } from "@prisma/client";
 import { useRouter } from "next/navigation";
-import { userInfo } from "os";
 import { useRef, useState } from "react";
 
 export default function AddCast({profile}: {profile: SignerUUIDs}) {
