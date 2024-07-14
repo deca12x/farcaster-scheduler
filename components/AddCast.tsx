@@ -60,7 +60,7 @@ export default function AddCast({profile}: {profile: SignerUUIDs}) {
         className="btn btn-primary"
         onClick={() => ref.current?.showModal()}
       >
-        + schedule
+        Add schedule
       </button>
       <dialog className="modal" ref={ref}>
         <div className="modal-box">

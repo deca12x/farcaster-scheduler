@@ -6,8 +6,8 @@ export default async function Page() {
   if (!session || !session.user) return <p>Please log in</p>;
 
   return (
-    <div>
-      <p>{session.user.id}</p>
+    <div className="flex flex-col items-center justify-center grow">
+      <p>Select a profile from the sidebar or add a new one</p>
     </div>
   );
 }
