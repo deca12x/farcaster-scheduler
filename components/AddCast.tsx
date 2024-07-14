@@ -5,55 +5,64 @@ import { useRouter } from "next/navigation";
 import { userInfo } from "os";
 import { useRef, useState } from "react";
 
-export default function AddCast({profile}: {profile: SignerUUIDs}) {
-    const [isLoading, setIsLoading] = useState(false);
-    const [file, setFile] = useState<File | null>(null);
-    const [castText, setCastText] = useState<string>("");
-    const [channel, setChannel] = useState<string>("");
-    const [publishDate, setPublishDate] = useState<string>("");
-    const router = useRouter()
-  
-    const fileInputRef = useRef<HTMLInputElement>(null);
-  
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setFile(e.target.files ? e.target.files[0] : null);
-    };
-  
-    const handleAddImageClick = () => {
-      fileInputRef.current?.click();
-    };
-  
-    const handleCastClick = async () => {
-        setIsLoading(true);
-        const formData = new FormData();
-        if (file) {
-          formData.append("file", file);
-        }
-        formData.append("castText", castText);
-        formData.append("uuid", profile.signer_uid);
-        formData.append("datetime", publishDate)
-        if (channel) {
-          formData.append("channel", channel);
-        }
-  
-        try {
-          console.log("Sending formData:", formData);
-          const res = await fetch("/api/upload", {
-            method: "POST",
-            body: formData,
-          });
-          const data = await res.json();
-          ref.current?.close()
-          router.refresh();
-          console.log("Response data:", data);
-        } catch (error) {
-          console.error("Error:", error);
-        } finally {
-          setIsLoading(false);
-        }
+export default function AddCast({ profile }: { profile: SignerUUIDs }) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+  const [castText, setCastText] = useState<string>("");
+  const [channel, setChannel] = useState<string>("");
+  const [publishDate, setPublishDate] = useState<string>("");
+  const router = useRouter();
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFile(e.target.files ? e.target.files[0] : null);
+  };
+
+  const handleAddImageClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleCastClick = async () => {
+    setIsLoading(true);
+    const formData = new FormData();
+    if (file) {
+      formData.append("file", file);
+    }
+    formData.append("castText", castText);
+    formData.append("uuid", profile.signer_uid);
+    formData.append("datetime", publishDate);
+    if (channel) {
+      formData.append("channel", channel);
+    }
+
+    try {
+      console.log("Sending formData:", formData);
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        throw new Error(`Server error: ${res.statusText}`);
       }
+
+      const data = await res.json().catch(() => {
+        throw new Error("Failed to parse JSON response");
+      });
+
+      ref.current?.close();
+      router.refresh();
+      console.log("Response data:", data);
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const ref = useRef<HTMLDialogElement>(null);
- 
+
   return (
     <>
       <button
@@ -101,20 +110,17 @@ export default function AddCast({profile}: {profile: SignerUUIDs}) {
               </div>
             </div>
             <div className="flex items-center gap-4">
-                <button
-                  className="btn btn-outline"
-                  onClick={handleAddImageClick}
-                >
-                  Add Image
-                </button>
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleFileChange}
-                  className="hidden"
-                />
-                <p>{file?.name}</p>
-              </div>
+              <button className="btn btn-outline" onClick={handleAddImageClick}>
+                Add Image
+              </button>
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                className="hidden"
+              />
+              <p>{file?.name}</p>
+            </div>
             <button
               onClick={handleCastClick}
               className="btn btn-primary mt-4"
