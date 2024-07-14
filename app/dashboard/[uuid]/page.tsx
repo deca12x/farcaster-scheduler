@@ -27,9 +27,9 @@ export default async function Page({ params }: { params: { uuid: string } }) {
           <p>No cast scheduled</p>
         </div>
       ) : (
-        <div className="bg-base-200 rounded-xl p-4">
+        <div className="flex flex-col mt-4">
           {casts.map((cast) => (
-            <div>
+            <div key={cast.id} className="bg-base-200 p-4 m-4 rounded-xl">
               {cast.cast_text} {cast.date_time.toISOString()}
             </div>
           ))}

@@ -1,6 +1,8 @@
 "use client";
 
 import { SignerUUIDs } from "@prisma/client";
+import { useRouter } from "next/navigation";
+import { userInfo } from "os";
 import { useRef, useState } from "react";
 
 export default function AddCast({profile}: {profile: SignerUUIDs}) {
@@ -9,6 +11,7 @@ export default function AddCast({profile}: {profile: SignerUUIDs}) {
     const [castText, setCastText] = useState<string>("");
     const [channel, setChannel] = useState<string>("");
     const [publishDate, setPublishDate] = useState<string>("");
+    const router = useRouter()
   
     const fileInputRef = useRef<HTMLInputElement>(null);
   
@@ -40,6 +43,8 @@ export default function AddCast({profile}: {profile: SignerUUIDs}) {
             body: formData,
           });
           const data = await res.json();
+          ref.current?.close()
+          router.refresh();
           console.log("Response data:", data);
         } catch (error) {
           console.error("Error:", error);
@@ -65,7 +70,8 @@ export default function AddCast({profile}: {profile: SignerUUIDs}) {
               ✕
             </button>
           </form>
-          <div className="flex flex-col gap-4">
+          <h3 className="font-semibold mt-4">Add schedule</h3>
+          <div className="flex flex-col gap-4 mt-6">
             <textarea
               className="textarea textarea-bordered w-full"
               placeholder="Cast text"
