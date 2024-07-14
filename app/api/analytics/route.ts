@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
+import { processData } from "../../../lib/utils/dataProcessing";
 
 export async function GET() {
   const url =
     "https://api.neynar.com/v2/farcaster/feed?feed_type=filter&filter_type=fids&fids=410626&with_recasts=false&limit=100";
 
-  // Ensure that the API key is a string
   const apiKey = process.env.NEYNAR_API_KEY ?? "";
 
   const options = {
@@ -18,7 +18,11 @@ export async function GET() {
   try {
     const res = await fetch(url, options);
     const data = await res.json();
-    return NextResponse.json(data);
+
+    // Process the data using the utility function
+    const processedData = processData(data);
+
+    return NextResponse.json(processedData);
   } catch (err) {
     console.error("error:", err);
     if (err instanceof Error) {
