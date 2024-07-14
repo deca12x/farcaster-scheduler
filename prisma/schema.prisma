@@ -9,8 +9,9 @@ datasource db {
 }
 
 model Users {
-  address     String        @id
-  signer_uids SignerUUIDs[]
+  address              String        @id
+  signer_uids          SignerUUIDs[]
+  lastAnalyticsTrigger DateTime?
 }
 
 model SignerUUIDs {
@@ -25,12 +26,15 @@ model SignerUUIDs {
 }
 
 model Casts {
-  id          Int          @id @default(autoincrement())
-  cast_text   String
-  ipfs_url    String?
-  published   Boolean
-  signerUidId Int
-  date_time   DateTime
-  cast_hash   String?      @unique
-  SignerUUIDs SignerUUIDs? @relation(fields: [signerUidId], references: [id])
+  id            Int          @id @default(autoincrement())
+  cast_text     String
+  ipfs_url      String?
+  published     Boolean
+  signerUidId   Int?
+  date_time     DateTime
+  cast_hash     String?      @unique
+  likes_count   Int          @default(0)
+  recasts_count Int          @default(0)
+  channel_name  String?
+  SignerUUIDs   SignerUUIDs? @relation(fields: [signerUidId], references: [id])
 }

@@ -7,9 +7,12 @@ export function processData(data: any) {
         ipfs_url: cast.hash,
         datetime: cast.timestamp,
         fid: cast.author.fid,
-        cast_hash: cast.hash, // Add cast_hash for identifying existing casts
+        cast_hash: cast.hash,
         author_display_name: cast.author.display_name,
         author_pfp_url: cast.author.pfp_url,
+        likes_count: cast.reactions.likes_count,
+        recasts_count: cast.reactions.recasts_count,
+        channel_name: cast.channel.name,
       };
     });
 }

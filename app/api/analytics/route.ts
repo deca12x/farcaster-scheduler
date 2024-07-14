@@ -1,24 +1,48 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { processData } from "../../../lib/utils/dataProcessing";
+import { auth } from "@/auth"; // Import the auth function
 
 const prisma = new PrismaClient();
 
 export async function GET() {
-  const url =
-    "https://api.neynar.com/v2/farcaster/feed?feed_type=filter&filter_type=fids&fids=410626&with_recasts=false&limit=100";
-
-  const apiKey = process.env.NEYNAR_API_KEY ?? "";
-
-  const options = {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-      api_key: apiKey,
-    },
-  };
-
   try {
+    const session = await auth(); // Get the current session
+    if (!session || !session.user?.id) {
+      return NextResponse.json({ error: "Unauthenticated" }, { status: 401 });
+    }
+
+    // Fetch the currently active Farcaster account's fid from the database
+    const activeAccount = await prisma.signerUUIDs.findFirst({
+      where: {
+        address_user: session.user.id,
+      },
+      select: {
+        fid: true,
+      },
+    });
+
+    if (!activeAccount) {
+      return NextResponse.json(
+        { error: "No active account found" },
+        { status: 404 }
+      );
+    }
+
+    const fid = activeAccount.fid;
+
+    const url = `https://api.neynar.com/v2/farcaster/feed?feed_type=filter&filter_type=fids&fids=${fid}&with_recasts=false&limit=100`;
+
+    const apiKey = process.env.NEYNAR_API_KEY ?? "";
+
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        api_key: apiKey,
+      },
+    };
+
     const res = await fetch(url, options);
     const data = await res.json();
 
@@ -41,6 +65,9 @@ export async function GET() {
             date_time: new Date(cast.datetime),
             published: true,
             signerUidId: existingCast.signerUidId ?? undefined,
+            likes_count: cast.likes_count,
+            recasts_count: cast.recasts_count,
+            channel_name: cast.channel_name,
           },
         });
       } else {
@@ -51,12 +78,10 @@ export async function GET() {
           date_time: new Date(cast.datetime),
           published: true,
           cast_hash: cast.cast_hash,
+          likes_count: cast.likes_count, // Add likes_count
+          recasts_count: cast.recasts_count, // Add recasts_count
+          channel_name: cast.channel_name, // Add channel_name
         };
-
-        // If `signerUidId` is available, include it in the data
-        if (cast.signerUidId) {
-          castData.signerUidId = cast.signerUidId;
-        }
 
         // Insert the new cast
         await prisma.casts.create({
