@@ -57,7 +57,8 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
                 await addProfile(
                   params.user.signer_uuid,
                   params.user.username,
-                  params.user.pfp_url || ""
+                  params.user.pfp_url || "",
+                  params.user.fid.toString()
                 );
               },
             },
