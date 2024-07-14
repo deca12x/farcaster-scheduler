@@ -8,14 +8,6 @@ export default async function Page() {
   return (
     <div>
       <p>{session.user.id}</p>
-      <form
-        action={async () => {
-          "use server";
-          await signOut();
-        }}
-      >
-        <button type="submit">Sign Out</button>
-      </form>
     </div>
   );
 }

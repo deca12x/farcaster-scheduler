@@ -1,184 +1,131 @@
 "use client";
 
+import { DynamicConnectButton, DynamicWidget, useIsLoggedIn } from "@dynamic-labs/sdk-react-core";
+import Link from "next/link";
 import Image from "next/image";
-import { NeynarAuthButton, useNeynarContext } from "@neynar/react";
-import { DynamicWidget } from "@/lib/dynamic";
-import { useState, useRef } from "react";
-import "daisyui/dist/full.css";
 
-export default function Home() {
-  const { user } = useNeynarContext();
-  const [isLoading, setIsLoading] = useState(false);
-  const [file, setFile] = useState<File | null>(null);
-  const [castText, setCastText] = useState<string>("");
-  const [channel, setChannel] = useState<string>("");
-  const [publishTime, setPublishTime] = useState<string>("");
-  const [publishDate, setPublishDate] = useState<string>("");
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFile(e.target.files ? e.target.files[0] : null);
-  };
-
-  const handleAddImageClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleCastClick = async () => {
-    if (user) {
-      setIsLoading(true);
-      const formData = new FormData();
-      formData.append("user", JSON.stringify(user));
-      if (file) {
-        formData.append("file", file);
-      }
-      formData.append("castText", castText);
-      if (channel) {
-        formData.append("channel", channel);
-      }
-
-      try {
-        console.log("Sending formData:", formData);
-        const res = await fetch("/api/upload", {
-          method: "POST",
-          body: formData,
-        });
-        const data = await res.json();
-        console.log("Response data:", data);
-      } catch (error) {
-        console.error("Error:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    } else {
-      console.error("User is not authenticated");
-    }
-  };
-
+export default function Page() {
+  const isLoggedIn = useIsLoggedIn();
   return (
-    <main className="flex min-h-screen flex-row bg-base-200">
-      {/* Sidebar */}
-      <aside className="w-1/5 bg-base-100 p-4 shadow-lg flex flex-col items-center gap-4">
-        <div className="mb-4">
-          <Image src="/logo.svg" alt="Logo" width={100} height={50} />
+    <main className="px-8 md:px-24 py-12">
+      <div className="flex w-full items-center">
+        <div className="flex-grow items-center justify-items-center">
+          <Image src="/Logobru.png" alt="Logo" width={150} height={150} />
         </div>
-        <button className="btn btn-primary mb-6">Add Account</button>
-        {/* Added Widgets */}
-        <div className="w-full flex flex-col gap-4">
-          <DynamicWidget className="p-2 rounded shadow bg-base-100" />
-          <NeynarAuthButton className="p-2 rounded shadow bg-base-100" />
+        <div className="space-x-10 items-center hidden md:flex">
+          <a href="#why" className="font-bold">Why use HOOT</a>
+          <a href="#how" className="font-bold">How it works</a>
+          {isLoggedIn ? <Link className="btn btn-primary" href="/dashboard">Enter app</Link> : <DynamicWidget />}
         </div>
-        {/* Accounts List */}
-        <div className="flex flex-col gap-4 w-full">
-          {[1, 2, 3, 4].map((index) => (
-            <div
-              key={index}
-              className="flex items-center gap-4 p-2 bg-base-100 rounded shadow"
-            >
-              <div className="avatar">
-                <div className="w-10 h-10 rounded-full bg-neutral-focus"></div>
-              </div>
-              <p className="text-lg font-semibold">Nome</p>
-            </div>
-          ))}
+      </div>
+      <div className="mt-20 text-center flex flex-col place-content-center">
+        <div className="text-7xl font-bold">
+        Schedule your casts in a <span className="text-[#004DFB]">HOOT</span>
         </div>
-      </aside>
-
-      {/* Main Content */}
-      <section className="w-4/5 p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-xl font-semibold">New Cast</h1>
-          <a href="#" className="link link-primary">
-            Analytics
-          </a>
+        <div className="font-bold text-lg text-gray-600 mt-12 max-w-xl flex self-center">
+        Plan and automate your posts to reach your audience at the best times for maximum engagement and visibility
         </div>
-        <div className="bg-base-100 p-6 rounded-lg shadow-md">
-          <div className="flex flex-col gap-4">
-            <textarea
-              className="textarea textarea-bordered w-full"
-              placeholder="Cast text"
-              value={castText}
-              onChange={(e) => setCastText(e.target.value)}
-            ></textarea>
-            <div className="flex gap-4">
-              <div className="flex-1">
-                <label className="block text-sm font-medium">
-                  Publish Date
-                </label>
-                <input
-                  type="date"
-                  value={publishDate}
-                  onChange={(e) => setPublishDate(e.target.value)}
-                  className="input input-bordered w-full"
-                />
-              </div>
-              <div className="flex-1">
-                <label className="block text-sm font-medium">
-                  Publish Time
-                </label>
-                <input
-                  type="time"
-                  value={publishTime}
-                  onChange={(e) => setPublishTime(e.target.value)}
-                  className="input input-bordered w-full"
-                />
-              </div>
-              <div className="flex-1">
-                <label className="block text-sm font-medium">Channel</label>
-                <input
-                  type="text"
-                  value={channel}
-                  onChange={(e) => setChannel(e.target.value)}
-                  className="input input-bordered w-full"
-                />
-              </div>
-              <div className="flex-1 flex items-end">
-                <button
-                  className="btn btn-outline w-full"
-                  onClick={handleAddImageClick}
-                >
-                  Add Image
-                </button>
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleFileChange}
-                  className="hidden"
-                />
-              </div>
-            </div>
-            <button
-              onClick={handleCastClick}
-              className="btn btn-primary mt-4"
-              disabled={isLoading}
-            >
-              {isLoading ? "Scheduling..." : "Schedule"}
-            </button>
+      </div>
+      <div className="mt-12 flex place-content-center">
+      {isLoggedIn ? <Link className="btn btn-primary" href="/dashboard">Enter app</Link> : <DynamicWidget />}
+      </div>
+      <div className="mt-12 flex place-content-center">
+        <Image src="/globe.png" width={600} height={600} alt="globe" />
+      </div>
+      <div className="mt-20 text-center" id="why">
+        <p className="text-5xl font-bold">Why Use HOOT</p>
+      </div>
+      <div className="divider divider-vertical max-w-4xl mx-auto"></div>
+      <div className="mt-12 grid grid-cols-1 xl:grid-cols-3 gap-8 text-white">
+        <div className="card bg-gradient-to-tr from-[#1C1E34] to-[#21297C]">
+          <div className="card-body">
+            <Image
+              unoptimized
+              src={"/Group.png"}
+              width={25}
+              height={25}
+              alt="group"
+            />
+            <p className="text-3xl font-bold">Effortless Scheduling</p>
+            <p>
+            Automate your Farcaster posts with ease. Set your content to be published at the optimal times without lifting a finger
+            </p>
           </div>
         </div>
-        <h1 className="text-xl font-semibold">Scheduled Casts</h1>
-        <div className="mt-12 bg-base-100 p-4 rounded shadow-md">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <div className="avatar">
-                <div className="w-10 h-10 rounded-full bg-neutral-focus"></div>
-              </div>
-              <div className="ml-4">
-                <p className="font-semibold">Post cast txt</p>
-                <div className="text-gray-600">
-                  <p>DD/MM/YY</p>
-                  <p>00:00</p>
-                </div>
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <button className="btn btn-secondary btn-sm">Edit Cast</button>
-              <button className="btn btn-error btn-sm">Delete Cast</button>
-            </div>
+        <div className="card bg-gradient-to-tr from-[#1C1E34] to-[#21297C]">
+          <div className="card-body">
+            <Image
+              unoptimized
+              src={"/Group1.png"}
+              width={25}
+              height={25}
+              alt="second"
+            />
+            <p className="text-3xl font-bold">Advanced Analytics</p>
+            <p>
+            Leverage powerful analytics to fine-tune your posting strategy. Understand your audience and maximize engagement with data-driven insights.
+            </p>
           </div>
         </div>
-      </section>
+        <div className="card bg-gradient-to-tr from-[#1C1E34] to-[#21297C]">
+          <div className="card-body">
+            <Image
+              unoptimized
+              src={"/Vector.png"}
+              width={25}
+              height={25}
+              alt="travel"
+            />
+            <p className="text-3xl font-bold">Consistent Engagement</p>
+            <p>
+            Ensure your Farcaster presence remains consistent. Schedule posts in advance to keep your audience engaged, even when you're offline.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="text-center mt-36" id="how">
+        <p className="text-5xl font-bold">How it works</p>
+      </div>
+      <div className="divider divider-vertical max-w-4xl mx-auto"></div>
+      <div className="mt-20 grid grid-cols-1 xl:grid-cols-2 gap-y-10 xl:gap-y-0 justify-items-center items-center max-w-5xl mx-auto">
+        <div>
+          <Image src="/donna1.png" width={300} height={300} alt="work1" />
+        </div>
+        <div>
+          <p className="text-4xl font-bold">
+          Connect Your Farcaster Account
+          </p>
+          <p className="max-w-md font-semibold mt-4">
+          Plan and automate your posts to reach your audience at the best times for maximum engagement and visibility
+          </p>
+        </div>
+      </div>
+      <div className="mt-24 grid grid-cols-1 xl:grid-cols-2 gap-y-10 xl:gap-y-0 justify-items-center items-center max-w-5xl mx-auto">
+        <div className="order-last xl:order-first">
+          <p className="text-4xl font-bold">
+          Create and Schedule Your Posts
+          </p>
+          <p className="max-w-md font-semibold mt-4">
+          Input your text, upload an image or frame URL, and select the date and time for your cast. Chrono makes it easy to plan and schedule your content in advance.
+          </p>
+        </div>
+        <div>
+          <Image src="/donna2.png" width={300} height={300} alt="work2" />
+        </div>
+      </div>
+      <div className="mt-24 grid grid-cols-1 xl:grid-cols-2 justify-items-center gap-y-10 xl:gap-y-0 items-center max-w-5xl mx-auto">
+        <div>
+          <Image src="/donna3.png" width={300} height={300} alt="work3" />
+        </div>
+        <div>
+          <p className="text-4xl font-bold">
+          Automate and Optimize
+          </p>
+          <p className="max-w-md font-semibold mt-4">
+          Once your posts are scheduled, Chrono takes care of the rest. Your posts will be automatically published at the right time, and you'll get analytics to optimize future postings.
+          </p>
+        </div>
+      </div>
     </main>
   );
 }
