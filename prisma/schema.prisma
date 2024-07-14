@@ -25,11 +25,15 @@ model SignerUUIDs {
 }
 
 model Casts {
-  id          Int         @id @default(autoincrement())
-  cast_text   String
-  ipfs_url    String
-  date_time   DateTime
-  published   Boolean
-  signerUidId Int
-  signer_uid  SignerUUIDs @relation(fields: [signerUidId], references: [id])
+  id            Int         @id @default(autoincrement())
+  cast_text     String
+  ipfs_url      String
+  datetime      DateTime
+  published     Boolean
+  fid           Int // Use fid instead of signerUidId
+  likes_count   Int
+  recasts_count Int
+  channel_name  String
+  signerUidId   Int
+  signer_uid    SignerUUIDs @relation(fields: [fid], references: [id])
 }
