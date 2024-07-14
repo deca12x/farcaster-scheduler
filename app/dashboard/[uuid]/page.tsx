@@ -10,9 +10,8 @@ export default async function Page({ params }: { params: { uuid: string } }) {
   });
   const casts = await prisma.casts.findMany({
     where: {
-      signer_uid: {
-        signer_uid: params.uuid,
-      },
+      signerUidId: profile.id,
+      published: false,
     },
   });
 
@@ -41,8 +40,13 @@ export default async function Page({ params }: { params: { uuid: string } }) {
                 height={100}
               />{" "}
               <span className="grow">
-                {cast.cast_text} {cast.date_time.toISOString().split("T").at(0)}{" "}
-                {cast.date_time.toISOString().split("T").at(1)?.slice(0, 5)}
+                {cast.cast_text}{" "}
+                {new Date(cast.date_time).toISOString().split("T").at(0)}{" "}
+                {new Date(cast.date_time)
+                  .toISOString()
+                  .split("T")
+                  .at(1)
+                  ?.slice(0, 5)}
               </span>
               {new Date().getTime() < new Date(cast.date_time).getTime() ? (
                 <>

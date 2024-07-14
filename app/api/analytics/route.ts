@@ -25,39 +25,44 @@ export async function GET() {
     // Process the data using the utility function
     const processedData = processData(data);
 
-    // Insert processed data into the database
+    // Insert or update processed data into the database
     for (const cast of processedData) {
-      // Fetch the signer based on fid
-      let signer = await prisma.signerUUIDs.findUnique({
-        where: { signer_uid: cast.fid.toString() },
+      // Check if the cast already exists
+      const existingCast = await prisma.casts.findUnique({
+        where: { cast_hash: cast.cast_hash },
       });
 
-      // If signer does not exist, create a new one
-      if (!signer) {
-        signer = await prisma.signerUUIDs.create({
+      if (existingCast) {
+        // Update the existing cast
+        await prisma.casts.update({
+          where: { cast_hash: cast.cast_hash },
           data: {
-            address_user: cast.fid.toString(),
-            signer_uid: cast.fid.toString(),
-            name: cast.author_display_name,
-            image: cast.author_pfp_url,
+            cast_text: cast.cast_text,
+            date_time: new Date(cast.datetime),
+            published: true,
+            signerUidId: existingCast.signerUidId ?? undefined,
           },
         });
-      }
-
-      // Insert the cast
-      await prisma.casts.create({
-        data: {
+      } else {
+        // Prepare data for new cast creation
+        const castData: any = {
           cast_text: cast.cast_text,
           ipfs_url: cast.ipfs_url,
-          date: cast.date,
-          time: cast.time,
+          date_time: new Date(cast.datetime),
           published: true,
-          signerUidId: signer.id,
-          likes_count: cast.likes_count,
-          recasts_count: cast.recasts_count,
-          channel_name: cast.channel_name,
-        },
-      });
+          cast_hash: cast.cast_hash,
+        };
+
+        // If `signerUidId` is available, include it in the data
+        if (cast.signerUidId) {
+          castData.signerUidId = cast.signerUidId;
+        }
+
+        // Insert the new cast
+        await prisma.casts.create({
+          data: castData,
+        });
+      }
     }
 
     return NextResponse.json({

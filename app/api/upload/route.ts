@@ -15,6 +15,8 @@ export async function POST(request: Request) {
 
   try {
     let imageUrl = "";
+    let newCast;
+
     if (image) {
       try {
         const id = await prisma.signerUUIDs.findFirstOrThrow({
@@ -28,11 +30,11 @@ export async function POST(request: Request) {
         const uploadResponse = await lighthouse.uploadBuffer(buffer, apiKey);
         const { Hash } = uploadResponse.data;
         imageUrl = `https://gateway.lighthouse.storage/ipfs/${Hash}`;
-        await prisma.casts.create({
+        newCast = await prisma.casts.create({
           data: {
             ipfs_url: imageUrl,
             cast_text: cast_text,
-            date_time: datetime ? new Date(datetime.toString()) : "",
+            date_time: datetime ? new Date(datetime.toString()) : new Date(),
             published: false,
             signerUidId: id.id,
           },
@@ -43,36 +45,54 @@ export async function POST(request: Request) {
       }
     }
 
-    // const castOptions = {
-    //   method: "POST",
-    //   headers: {
-    //     accept: "application/json",
-    //     api_key: process.env.NEYNAR_API_KEY || "",
-    //     "content-type": "application/json",
-    //   },
-    //   body: JSON.stringify({
-    //     parent_author_fid: user.fid,
-    //     text: cast_text,
-    //     signer_uuid: user.signer_uuid,
-    //     embeds: imageUrl ? [{ url: imageUrl }] : [],
-    //     channel_id: channel,
-    //   }),
-    // };
+    if (!newCast) {
+      return new NextResponse("Failed to create cast entry.", { status: 500 });
+    }
 
-    // console.log("Sending cast to Neynar:", castOptions);
-    // const response = await fetch(
-    //   "https://api.neynar.com/v2/farcaster/cast",
-    //   castOptions
-    // );
+    // Send cast to Neynar API
+    const castOptions = {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        api_key: process.env.NEYNAR_API_KEY || "",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        parent_author_fid: newCast.signerUidId,
+        text: cast_text,
+        signer_uuid: uuid,
+        embeds: imageUrl ? [{ url: imageUrl }] : [],
+        channel_id: channel,
+      }),
+    };
 
-    // if (!response.ok) {
-    //   throw new Error(`Neynar API error: ${response.statusText}`);
-    // }
+    console.log("Sending cast to Neynar:", castOptions);
+    const response = await fetch(
+      "https://api.neynar.com/v2/farcaster/cast",
+      castOptions
+    );
 
-    // const data = await response.json();
-    // console.log("Neynar API response:", data);
+    if (!response.ok) {
+      throw new Error(`Neynar API error: ${response.statusText}`);
+    }
+
+    const responseData = await response.json();
+    console.log("Neynar API response:", responseData);
+
+    // Update cast entry with hash from Neynar response
+    const castHash = responseData.hash;
+    await prisma.casts.update({
+      where: {
+        id: newCast.id,
+      },
+      data: {
+        cast_hash: castHash,
+        published: true,
+      },
+    });
+
     revalidatePath("/dashboard/[uuid]", "page");
-    return Response.json({ status: "ok" });
+    return NextResponse.json({ status: "ok", castHash });
   } catch (error) {
     console.error("Error:", error);
     return new NextResponse("Server Side error 500", { status: 500 });
