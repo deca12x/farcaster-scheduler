@@ -99,9 +99,10 @@ export default function AddCast({profile}: {profile: SignerUUIDs}) {
                   className="input input-bordered w-full"
                 />
               </div>
-              <div className="flex-1 flex items-end">
+            </div>
+            <div className="flex items-center gap-4">
                 <button
-                  className="btn btn-outline w-full"
+                  className="btn btn-outline"
                   onClick={handleAddImageClick}
                 >
                   Add Image
@@ -112,8 +113,8 @@ export default function AddCast({profile}: {profile: SignerUUIDs}) {
                   onChange={handleFileChange}
                   className="hidden"
                 />
+                <p>{file?.name}</p>
               </div>
-            </div>
             <button
               onClick={handleCastClick}
               className="btn btn-primary mt-4"
